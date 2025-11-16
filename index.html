@@ -3,14 +3,46 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Roleplay Chat</title>
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    body { margin: 0; padding: 0; }
+    * {
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    html {
+      background: #000;
+      overscroll-behavior: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    body { 
+      margin: 0; 
+      padding: 0;
+      background: #000;
+      overscroll-behavior: none;
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+    
+    #root {
+      background: #000;
+      height: 100%;
+      overscroll-behavior: none;
+    }
+    
+    .scroll-container {
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+    }
   </style>
 </head>
 <body>
@@ -625,16 +657,16 @@
       const hover = (normal, oled) => oledMode ? oled : normal;
 
       return (
-        <div className={`flex flex-col h-screen ${bg('bg-gray-900', 'bg-black')} text-gray-100`}>
-          <div className={`border-b ${border('border-gray-700', 'border-gray-900')} p-3 flex justify-between items-center`}>
-            <div className="flex items-center gap-3">
-              <h1 className="text-lg font-mono">ROLEPLAY</h1>
-              <div className="flex items-center gap-2">
-                <span className="text-xs text-gray-500 font-mono">BRANCH:</span>
+        <div className={`flex flex-col h-full ${bg('bg-gray-900', 'bg-black')} text-gray-100`}>
+          <div className={`border-b ${border('border-gray-700', 'border-gray-900')} p-2 sm:p-3 flex justify-between items-center flex-wrap sm:flex-nowrap gap-2`}>
+            <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-shrink">
+              <h1 className="text-sm sm:text-lg font-mono whitespace-nowrap">ROLEPLAY</h1>
+              <div className="flex items-center gap-1 sm:gap-2 min-w-0">
+                <span className="text-xs text-gray-500 font-mono hidden sm:inline">BRANCH:</span>
                 <select
                   value={currentBranch}
                   onChange={(e) => setCurrentBranch(e.target.value)}
-                  className={`${bg('bg-gray-800', 'bg-gray-900')} border ${border('border-gray-600', 'border-gray-800')} px-2 py-1 text-xs font-mono focus:outline-none ${border('focus:border-gray-500', 'focus:border-gray-700')}`}
+                  className={`${bg('bg-gray-800', 'bg-gray-900')} border ${border('border-gray-600', 'border-gray-800')} px-1 sm:px-2 py-1 text-xs font-mono focus:outline-none ${border('focus:border-gray-500', 'focus:border-gray-700')} min-w-0 max-w-[120px] sm:max-w-none`}
                 >
                   {Object.keys(branches).map(branchName => (
                     <option key={branchName} value={branchName}>
@@ -645,59 +677,62 @@
                 {currentBranch !== 'main' && (
                   <button
                     onClick={() => deleteBranch(currentBranch)}
-                    className="px-2 py-1 bg-red-900 hover:bg-red-800 border border-red-700 text-xs font-mono"
+                    className="px-1 sm:px-2 py-1 bg-red-900 hover:bg-red-800 border border-red-700 text-xs font-mono whitespace-nowrap"
                   >
                     DEL
                   </button>
                 )}
               </div>
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-1 sm:gap-2 flex-shrink-0">
               <button
                 onClick={() => setOledMode(!oledMode)}
-                className={`px-3 py-1 ${bg('bg-gray-800', 'bg-gray-900')} ${hover('hover:bg-gray-700', 'hover:bg-gray-800')} border ${border('border-gray-600', 'border-gray-800')} text-sm font-mono ${oledMode ? 'text-green-400' : ''}`}
+                className={`px-2 sm:px-3 py-1 ${bg('bg-gray-800', 'bg-gray-900')} ${hover('hover:bg-gray-700', 'hover:bg-gray-800')} border ${border('border-gray-600', 'border-gray-800')} text-xs sm:text-sm font-mono ${oledMode ? 'text-green-400' : ''}`}
               >
-                OLED
+                <span className="hidden sm:inline">OLED</span>
+                <span className="sm:hidden">O</span>
               </button>
               <button
                 onClick={() => setShowSearch(!showSearch)}
-                className={`px-3 py-1 ${bg('bg-gray-800', 'bg-gray-900')} ${hover('hover:bg-gray-700', 'hover:bg-gray-800')} border ${border('border-gray-600', 'border-gray-800')} text-sm font-mono`}
+                className={`px-2 sm:px-3 py-1 ${bg('bg-gray-800', 'bg-gray-900')} ${hover('hover:bg-gray-700', 'hover:bg-gray-800')} border ${border('border-gray-600', 'border-gray-800')} text-xs sm:text-sm font-mono`}
               >
-                {showSearch ? 'HIDE' : 'SEARCH'}
+                <span className="hidden sm:inline">{showSearch ? 'HIDE' : 'SEARCH'}</span>
+                <span className="sm:hidden">S</span>
               </button>
               <button
                 onClick={() => setShowSettings(!showSettings)}
-                className={`px-3 py-1 ${bg('bg-gray-800', 'bg-gray-900')} ${hover('hover:bg-gray-700', 'hover:bg-gray-800')} border ${border('border-gray-600', 'border-gray-800')} text-sm font-mono`}
+                className={`px-2 sm:px-3 py-1 ${bg('bg-gray-800', 'bg-gray-900')} ${hover('hover:bg-gray-700', 'hover:bg-gray-800')} border ${border('border-gray-600', 'border-gray-800')} text-xs sm:text-sm font-mono`}
               >
-                {showSettings ? 'HIDE' : 'SETTINGS'}
+                <span className="hidden sm:inline">{showSettings ? 'HIDE' : 'SETTINGS'}</span>
+                <span className="sm:hidden">⚙</span>
               </button>
             </div>
           </div>
 
           {showSearch && (
-            <div className={`border-b ${border('border-gray-700', 'border-gray-900')} p-3 ${bg('bg-gray-850', 'bg-black')}`}>
+            <div className={`border-b ${border('border-gray-700', 'border-gray-900')} p-2 sm:p-3 ${bg('bg-gray-850', 'bg-black')}`}>
               <div className="flex gap-2 items-center">
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search messages..."
-                  className={`flex-1 ${bg('bg-gray-800', 'bg-gray-900')} border ${border('border-gray-600', 'border-gray-800')} px-3 py-1 text-sm font-mono focus:outline-none ${border('focus:border-gray-500', 'focus:border-gray-700')}`}
+                  className={`flex-1 ${bg('bg-gray-800', 'bg-gray-900')} border ${border('border-gray-600', 'border-gray-800')} px-2 sm:px-3 py-1 text-xs sm:text-sm font-mono focus:outline-none ${border('focus:border-gray-500', 'focus:border-gray-700')}`}
                 />
                 {searchResults.length > 0 && (
                   <>
-                    <span className="text-xs font-mono text-gray-400">
-                      {currentSearchIndex + 1} / {searchResults.length}
+                    <span className="text-xs font-mono text-gray-400 whitespace-nowrap">
+                      {currentSearchIndex + 1}/{searchResults.length}
                     </span>
                     <button
                       onClick={prevSearchResult}
-                      className={`px-3 py-1 ${bg('bg-gray-800', 'bg-gray-900')} ${hover('hover:bg-gray-700', 'hover:bg-gray-800')} border ${border('border-gray-600', 'border-gray-800')} text-xs font-mono`}
+                      className={`px-2 sm:px-3 py-1 ${bg('bg-gray-800', 'bg-gray-900')} ${hover('hover:bg-gray-700', 'hover:bg-gray-800')} border ${border('border-gray-600', 'border-gray-800')} text-xs font-mono`}
                     >
                       ◀
                     </button>
                     <button
                       onClick={nextSearchResult}
-                      className={`px-3 py-1 ${bg('bg-gray-800', 'bg-gray-900')} ${hover('hover:bg-gray-700', 'hover:bg-gray-800')} border ${border('border-gray-600', 'border-gray-800')} text-xs font-mono`}
+                      className={`px-2 sm:px-3 py-1 ${bg('bg-gray-800', 'bg-gray-900')} ${hover('hover:bg-gray-700', 'hover:bg-gray-800')} border ${border('border-gray-600', 'border-gray-800')} text-xs font-mono`}
                     >
                       ▶
                     </button>
@@ -708,16 +743,16 @@
                     setSearchQuery('');
                     setShowSearch(false);
                   }}
-                  className={`px-3 py-1 ${bg('bg-gray-800', 'bg-gray-900')} ${hover('hover:bg-gray-700', 'hover:bg-gray-800')} border ${border('border-gray-600', 'border-gray-800')} text-xs font-mono`}
+                  className={`px-2 sm:px-3 py-1 ${bg('bg-gray-800', 'bg-gray-900')} ${hover('hover:bg-gray-700', 'hover:bg-gray-800')} border ${border('border-gray-600', 'border-gray-800')} text-xs font-mono whitespace-nowrap`}
                 >
-                  CLEAR
+                  CLR
                 </button>
               </div>
             </div>
           )}
 
           {showSettings && (
-            <div className={`border-b ${border('border-gray-700', 'border-gray-900')} p-3 ${bg('bg-gray-850', 'bg-black')} space-y-3 max-h-96 overflow-y-auto`}>
+            <div className={`border-b ${border('border-gray-700', 'border-gray-900')} p-2 sm:p-3 ${bg('bg-gray-850', 'bg-black')} space-y-3 max-h-96 overflow-y-auto scroll-container`}>
               <div>
                 <label className="block text-xs font-mono text-gray-400 mb-1">CHARACTER TEMPLATE</label>
                 <div className="flex gap-2 mb-2">
@@ -735,7 +770,7 @@
                   {customTemplates.some(t => t.name === selectedTemplate) && (
                     <button
                       onClick={() => deleteCustomTemplate(selectedTemplate)}
-                      className="px-3 py-1 bg-red-900 hover:bg-red-800 border border-red-700 text-xs font-mono"
+                      className="px-3 py-1 bg-red-900 hover:bg-red-800 border border-red-700 text-xs font-mono whitespace-nowrap"
                     >
                       DELETE
                     </button>
@@ -753,7 +788,7 @@
                   <button
                     onClick={saveCustomTemplate}
                     disabled={!newTemplateName.trim()}
-                    className={`px-3 py-1 ${bg('bg-gray-800', 'bg-gray-900')} ${hover('hover:bg-gray-700', 'hover:bg-gray-800')} border ${border('border-gray-600', 'border-gray-800')} text-xs font-mono disabled:opacity-50`}
+                    className={`px-3 py-1 ${bg('bg-gray-800', 'bg-gray-900')} ${hover('hover:bg-gray-700', 'hover:bg-gray-800')} border ${border('border-gray-600', 'border-gray-800')} text-xs font-mono disabled:opacity-50 whitespace-nowrap`}
                   >
                     SAVE AS
                   </button>
@@ -986,9 +1021,9 @@
           )}
 
           {showCharacterCard && characterCard && (
-            <div className={`border-b ${border('border-gray-700', 'border-gray-900')} ${bg('bg-gray-850', 'bg-black')} p-3 space-y-3 max-h-96 overflow-y-auto`}>
+            <div className={`border-b ${border('border-gray-700', 'border-gray-900')} ${bg('bg-gray-850', 'bg-black')} p-2 sm:p-3 space-y-3 max-h-96 overflow-y-auto scroll-container`}>
               <div className="flex justify-between items-center mb-2">
-                <div className="text-sm font-mono text-gray-300">CHARACTER CARD EDITOR</div>
+                <div className="text-xs sm:text-sm font-mono text-gray-300">CHARACTER CARD EDITOR</div>
                 <button
                   onClick={() => setShowCharacterCard(false)}
                   className={`px-2 py-1 ${bg('bg-gray-800', 'bg-gray-900')} ${hover('hover:bg-gray-700', 'hover:bg-gray-800')} border ${border('border-gray-600', 'border-gray-800')} text-xs font-mono`}
@@ -1077,7 +1112,7 @@
             </div>
           )}
 
-          <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          <div className="flex-1 overflow-y-auto p-2 sm:p-4 space-y-4 scroll-container">
             {messages.map((msg, idx) => {
               const isSearchResult = searchResults.includes(idx);
               const isCurrentResult = searchResults[currentSearchIndex] === idx;
@@ -1158,7 +1193,7 @@
                     </div>
                   ) : (
                     <div
-                      className={`font-mono text-sm whitespace-pre-wrap ${
+                      className={`font-mono text-xs sm:text-sm whitespace-pre-wrap ${
                         msg.role === 'user'
                           ? 'text-blue-400'
                           : msg.role === 'assistant'
@@ -1193,7 +1228,7 @@
                 <div className="text-xs font-mono mb-1 opacity-60">
                   ASSISTANT #{messages.length} <span className="text-yellow-500">● STREAMING</span>
                 </div>
-                <div className="font-mono text-sm whitespace-pre-wrap text-green-400">
+                <div className="font-mono text-xs sm:text-sm whitespace-pre-wrap text-green-400">
                   {streamingText}<span className="animate-pulse">▊</span>
                 </div>
               </div>
@@ -1207,13 +1242,13 @@
             <div ref={messagesEndRef} />
           </div>
 
-          <div className={`border-t ${border('border-gray-700', 'border-gray-900')} p-3`}>
+          <div className={`border-t ${border('border-gray-700', 'border-gray-900')} p-2 sm:p-3`}>
             <div className="flex gap-2">
               <textarea
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyPress={handleKeyPress}
-                className={`flex-1 ${bg('bg-gray-800', 'bg-gray-900')} border ${border('border-gray-600', 'border-gray-800')} px-3 py-2 text-sm font-mono focus:outline-none ${border('focus:border-gray-500', 'focus:border-gray-700')} resize-none`}
+                className={`flex-1 ${bg('bg-gray-800', 'bg-gray-900')} border ${border('border-gray-600', 'border-gray-800')} px-2 sm:px-3 py-2 text-xs sm:text-sm font-mono focus:outline-none ${border('focus:border-gray-500', 'focus:border-gray-700')} resize-none`}
                 placeholder="Enter message... (Shift+Enter for new line)"
                 rows="3"
                 disabled={loading || !apiKey}
@@ -1221,7 +1256,7 @@
               {isStreaming ? (
                 <button
                   onClick={stopGeneration}
-                  className="px-6 bg-red-900 hover:bg-red-800 border border-red-700 font-mono"
+                  className="px-4 sm:px-6 bg-red-900 hover:bg-red-800 border border-red-700 font-mono text-xs sm:text-sm whitespace-nowrap"
                 >
                   STOP
                 </button>
@@ -1229,7 +1264,7 @@
                 <button
                   onClick={sendMessage}
                   disabled={loading || !apiKey || !input.trim()}
-                  className={`px-6 ${bg('bg-gray-800', 'bg-gray-900')} ${hover('hover:bg-gray-700', 'hover:bg-gray-800')} border ${border('border-gray-600', 'border-gray-800')} font-mono disabled:opacity-50 disabled:cursor-not-allowed`}
+                  className={`px-4 sm:px-6 ${bg('bg-gray-800', 'bg-gray-900')} ${hover('hover:bg-gray-700', 'hover:bg-gray-800')} border ${border('border-gray-600', 'border-gray-800')} font-mono disabled:opacity-50 disabled:cursor-not-allowed text-xs sm:text-sm whitespace-nowrap`}
                 >
                   SEND
                 </button>
