@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -14,7 +15,7 @@
 </head>
 <body>
   <div id="root"></div>
-  
+
   <script type="text/babel">
     const { useState, useRef, useEffect } = React;
 
@@ -82,6 +83,7 @@
       const [showSearch, setShowSearch] = useState(false);
       const [searchResults, setSearchResults] = useState([]);
       const [currentSearchIndex, setCurrentSearchIndex] = useState(0);
+      const [oledMode, setOledMode] = useState(false);
       
       const messagesEndRef = useRef(null);
       const abortControllerRef = useRef(null);
@@ -617,9 +619,14 @@
         }
       };
 
+      // Theme helper functions
+      const bg = (normal, oled) => oledMode ? oled : normal;
+      const border = (normal, oled) => oledMode ? oled : normal;
+      const hover = (normal, oled) => oledMode ? oled : normal;
+
       return (
-        <div className="flex flex-col h-screen bg-gray-900 text-gray-100">
-          <div className="border-b border-gray-700 p-3 flex justify-between items-center">
+        <div className={`flex flex-col h-screen ${bg('bg-gray-900', 'bg-black')} text-gray-100`}>
+          <div className={`border-b ${border('border-gray-700', 'border-gray-900')} p-3 flex justify-between items-center`}>
             <div className="flex items-center gap-3">
               <h1 className="text-lg font-mono">ROLEPLAY</h1>
               <div className="flex items-center gap-2">
@@ -627,7 +634,7 @@
                 <select
                   value={currentBranch}
                   onChange={(e) => setCurrentBranch(e.target.value)}
-                  className="bg-gray-800 border border-gray-600 px-2 py-1 text-xs font-mono focus:outline-none focus:border-gray-500"
+                  className={`${bg('bg-gray-800', 'bg-gray-900')} border ${border('border-gray-600', 'border-gray-800')} px-2 py-1 text-xs font-mono focus:outline-none ${border('focus:border-gray-500', 'focus:border-gray-700')}`}
                 >
                   {Object.keys(branches).map(branchName => (
                     <option key={branchName} value={branchName}>
@@ -647,14 +654,20 @@
             </div>
             <div className="flex gap-2">
               <button
+                onClick={() => setOledMode(!oledMode)}
+                className={`px-3 py-1 ${bg('bg-gray-800', 'bg-gray-900')} ${hover('hover:bg-gray-700', 'hover:bg-gray-800')} border ${border('border-gray-600', 'border-gray-800')} text-sm font-mono ${oledMode ? 'text-green-400' : ''}`}
+              >
+                OLED
+              </button>
+              <button
                 onClick={() => setShowSearch(!showSearch)}
-                className="px-3 py-1 bg-gray-800 hover:bg-gray-700 border border-gray-600 text-sm font-mono"
+                className={`px-3 py-1 ${bg('bg-gray-800', 'bg-gray-900')} ${hover('hover:bg-gray-700', 'hover:bg-gray-800')} border ${border('border-gray-600', 'border-gray-800')} text-sm font-mono`}
               >
                 {showSearch ? 'HIDE' : 'SEARCH'}
               </button>
               <button
                 onClick={() => setShowSettings(!showSettings)}
-                className="px-3 py-1 bg-gray-800 hover:bg-gray-700 border border-gray-600 text-sm font-mono"
+                className={`px-3 py-1 ${bg('bg-gray-800', 'bg-gray-900')} ${hover('hover:bg-gray-700', 'hover:bg-gray-800')} border ${border('border-gray-600', 'border-gray-800')} text-sm font-mono`}
               >
                 {showSettings ? 'HIDE' : 'SETTINGS'}
               </button>
@@ -662,14 +675,14 @@
           </div>
 
           {showSearch && (
-            <div className="border-b border-gray-700 p-3 bg-gray-850">
+            <div className={`border-b ${border('border-gray-700', 'border-gray-900')} p-3 ${bg('bg-gray-850', 'bg-black')}`}>
               <div className="flex gap-2 items-center">
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search messages..."
-                  className="flex-1 bg-gray-800 border border-gray-600 px-3 py-1 text-sm font-mono focus:outline-none focus:border-gray-500"
+                  className={`flex-1 ${bg('bg-gray-800', 'bg-gray-900')} border ${border('border-gray-600', 'border-gray-800')} px-3 py-1 text-sm font-mono focus:outline-none ${border('focus:border-gray-500', 'focus:border-gray-700')}`}
                 />
                 {searchResults.length > 0 && (
                   <>
@@ -678,13 +691,13 @@
                     </span>
                     <button
                       onClick={prevSearchResult}
-                      className="px-3 py-1 bg-gray-800 hover:bg-gray-700 border border-gray-600 text-xs font-mono"
+                      className={`px-3 py-1 ${bg('bg-gray-800', 'bg-gray-900')} ${hover('hover:bg-gray-700', 'hover:bg-gray-800')} border ${border('border-gray-600', 'border-gray-800')} text-xs font-mono`}
                     >
                       ◀
                     </button>
                     <button
                       onClick={nextSearchResult}
-                      className="px-3 py-1 bg-gray-800 hover:bg-gray-700 border border-gray-600 text-xs font-mono"
+                      className={`px-3 py-1 ${bg('bg-gray-800', 'bg-gray-900')} ${hover('hover:bg-gray-700', 'hover:bg-gray-800')} border ${border('border-gray-600', 'border-gray-800')} text-xs font-mono`}
                     >
                       ▶
                     </button>
@@ -695,7 +708,7 @@
                     setSearchQuery('');
                     setShowSearch(false);
                   }}
-                  className="px-3 py-1 bg-gray-800 hover:bg-gray-700 border border-gray-600 text-xs font-mono"
+                  className={`px-3 py-1 ${bg('bg-gray-800', 'bg-gray-900')} ${hover('hover:bg-gray-700', 'hover:bg-gray-800')} border ${border('border-gray-600', 'border-gray-800')} text-xs font-mono`}
                 >
                   CLEAR
                 </button>
@@ -704,14 +717,14 @@
           )}
 
           {showSettings && (
-            <div className="border-b border-gray-700 p-3 bg-gray-850 space-y-3 max-h-96 overflow-y-auto">
+            <div className={`border-b ${border('border-gray-700', 'border-gray-900')} p-3 ${bg('bg-gray-850', 'bg-black')} space-y-3 max-h-96 overflow-y-auto`}>
               <div>
                 <label className="block text-xs font-mono text-gray-400 mb-1">CHARACTER TEMPLATE</label>
                 <div className="flex gap-2 mb-2">
                   <select
                     value={selectedTemplate}
                     onChange={(e) => loadTemplate(e.target.value)}
-                    className="flex-1 bg-gray-800 border border-gray-600 px-2 py-1 text-sm font-mono focus:outline-none focus:border-gray-500"
+                    className={`flex-1 ${bg('bg-gray-800', 'bg-gray-900')} border ${border('border-gray-600', 'border-gray-800')} px-2 py-1 text-sm font-mono focus:outline-none ${border('focus:border-gray-500', 'focus:border-gray-700')}`}
                   >
                     {allTemplates.map(template => (
                       <option key={template.name} value={template.name}>
@@ -729,31 +742,31 @@
                   )}
                 </div>
                 
-                <div className="flex gap-2 pt-2 border-t border-gray-700">
+                <div className={`flex gap-2 pt-2 border-t ${border('border-gray-700', 'border-gray-900')}`}>
                   <input
                     type="text"
                     value={newTemplateName}
                     onChange={(e) => setNewTemplateName(e.target.value)}
-                    className="flex-1 bg-gray-800 border border-gray-600 px-2 py-1 text-xs font-mono focus:outline-none focus:border-gray-500"
+                    className={`flex-1 ${bg('bg-gray-800', 'bg-gray-900')} border ${border('border-gray-600', 'border-gray-800')} px-2 py-1 text-xs font-mono focus:outline-none ${border('focus:border-gray-500', 'focus:border-gray-700')}`}
                     placeholder="New template name..."
                   />
                   <button
                     onClick={saveCustomTemplate}
                     disabled={!newTemplateName.trim()}
-                    className="px-3 py-1 bg-gray-800 hover:bg-gray-700 border border-gray-600 text-xs font-mono disabled:opacity-50"
+                    className={`px-3 py-1 ${bg('bg-gray-800', 'bg-gray-900')} ${hover('hover:bg-gray-700', 'hover:bg-gray-800')} border ${border('border-gray-600', 'border-gray-800')} text-xs font-mono disabled:opacity-50`}
                   >
                     SAVE AS
                   </button>
                 </div>
               </div>
 
-              <div className="border-t border-gray-700 pt-3">
+              <div className={`border-t ${border('border-gray-700', 'border-gray-900')} pt-3`}>
                 <label className="block text-xs font-mono text-gray-400 mb-1">API KEY</label>
                 <input
                   type="password"
                   value={apiKey}
                   onChange={(e) => setApiKey(e.target.value)}
-                  className="w-full bg-gray-800 border border-gray-600 px-2 py-1 text-sm font-mono focus:outline-none focus:border-gray-500"
+                  className={`w-full ${bg('bg-gray-800', 'bg-gray-900')} border ${border('border-gray-600', 'border-gray-800')} px-2 py-1 text-sm font-mono focus:outline-none ${border('focus:border-gray-500', 'focus:border-gray-700')}`}
                   placeholder="sk-or-v1-..."
                 />
               </div>
@@ -764,7 +777,7 @@
                   type="text"
                   value={model}
                   onChange={(e) => setModel(e.target.value)}
-                  className="w-full bg-gray-800 border border-gray-600 px-2 py-1 text-sm font-mono focus:outline-none focus:border-gray-500"
+                  className={`w-full ${bg('bg-gray-800', 'bg-gray-900')} border ${border('border-gray-600', 'border-gray-800')} px-2 py-1 text-sm font-mono focus:outline-none ${border('focus:border-gray-500', 'focus:border-gray-700')}`}
                   placeholder="anthropic/claude-3.5-sonnet"
                 />
               </div>
@@ -777,12 +790,12 @@
                     setSystemPrompt(e.target.value);
                     setSelectedTemplate('CUSTOM');
                   }}
-                  className="w-full bg-gray-800 border border-gray-600 px-2 py-1 text-sm font-mono focus:outline-none focus:border-gray-500 h-24 resize-none"
+                  className={`w-full ${bg('bg-gray-800', 'bg-gray-900')} border ${border('border-gray-600', 'border-gray-800')} px-2 py-1 text-sm font-mono focus:outline-none ${border('focus:border-gray-500', 'focus:border-gray-700')} h-24 resize-none`}
                   placeholder="Define the character or scenario..."
                 />
               </div>
 
-              <div className="border-t border-gray-700 pt-3 space-y-3">
+              <div className={`border-t ${border('border-gray-700', 'border-gray-900')} pt-3 space-y-3`}>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="block text-xs font-mono text-gray-400 mb-1">
@@ -823,13 +836,13 @@
 
                 <button
                   onClick={() => setShowAdvanced(!showAdvanced)}
-                  className="w-full px-3 py-1 bg-gray-800 hover:bg-gray-700 border border-gray-600 text-xs font-mono"
+                  className={`w-full px-3 py-1 ${bg('bg-gray-800', 'bg-gray-900')} ${hover('hover:bg-gray-700', 'hover:bg-gray-800')} border ${border('border-gray-600', 'border-gray-800')} text-xs font-mono`}
                 >
                   {showAdvanced ? '▼' : '▶'} ADVANCED PARAMETERS
                 </button>
 
                 {showAdvanced && (
-                  <div className="space-y-3 pl-4 border-l-2 border-gray-700">
+                  <div className={`space-y-3 pl-4 border-l-2 ${border('border-gray-700', 'border-gray-900')}`}>
                     <div>
                       <label className="block text-xs font-mono text-gray-400 mb-1">
                         TOP P: {topP.toFixed(2)}
@@ -889,24 +902,24 @@
 
               <button
                 onClick={() => updateMessages([])}
-                className="px-3 py-1 bg-gray-800 hover:bg-gray-700 border border-gray-600 text-xs font-mono"
+                className={`px-3 py-1 ${bg('bg-gray-800', 'bg-gray-900')} ${hover('hover:bg-gray-700', 'hover:bg-gray-800')} border ${border('border-gray-600', 'border-gray-800')} text-xs font-mono`}
               >
                 CLEAR CHAT
               </button>
 
-              <div className="border-t border-gray-700 pt-3 space-y-2">
+              <div className={`border-t ${border('border-gray-700', 'border-gray-900')} pt-3 space-y-2`}>
                 <div className="text-xs font-mono text-gray-400 mb-2">CONVERSATION DATA</div>
                 <div className="flex gap-2">
                   <button
                     onClick={() => exportConversation('json')}
-                    className="flex-1 px-3 py-1 bg-gray-800 hover:bg-gray-700 border border-gray-600 text-xs font-mono"
+                    className={`flex-1 px-3 py-1 ${bg('bg-gray-800', 'bg-gray-900')} ${hover('hover:bg-gray-700', 'hover:bg-gray-800')} border ${border('border-gray-600', 'border-gray-800')} text-xs font-mono`}
                     disabled={messages.length === 0}
                   >
                     EXPORT JSON
                   </button>
                   <button
                     onClick={() => exportConversation('markdown')}
-                    className="flex-1 px-3 py-1 bg-gray-800 hover:bg-gray-700 border border-gray-600 text-xs font-mono"
+                    className={`flex-1 px-3 py-1 ${bg('bg-gray-800', 'bg-gray-900')} ${hover('hover:bg-gray-700', 'hover:bg-gray-800')} border ${border('border-gray-600', 'border-gray-800')} text-xs font-mono`}
                     disabled={messages.length === 0}
                   >
                     EXPORT MD
@@ -922,14 +935,14 @@
                   />
                   <label
                     htmlFor="import-file"
-                    className="block w-full px-3 py-1 bg-gray-800 hover:bg-gray-700 border border-gray-600 text-xs font-mono text-center cursor-pointer"
+                    className={`block w-full px-3 py-1 ${bg('bg-gray-800', 'bg-gray-900')} ${hover('hover:bg-gray-700', 'hover:bg-gray-800')} border ${border('border-gray-600', 'border-gray-800')} text-xs font-mono text-center cursor-pointer`}
                   >
                     IMPORT JSON
                   </label>
                 </div>
               </div>
 
-              <div className="border-t border-gray-700 pt-3 space-y-2">
+              <div className={`border-t ${border('border-gray-700', 'border-gray-900')} pt-3 space-y-2`}>
                 <div className="text-xs font-mono text-gray-400 mb-2">CHARACTER CARDS</div>
                 <div className="flex gap-2">
                   <input
@@ -941,13 +954,13 @@
                   />
                   <label
                     htmlFor="import-character"
-                    className="flex-1 px-3 py-1 bg-gray-800 hover:bg-gray-700 border border-gray-600 text-xs font-mono text-center cursor-pointer"
+                    className={`flex-1 px-3 py-1 ${bg('bg-gray-800', 'bg-gray-900')} ${hover('hover:bg-gray-700', 'hover:bg-gray-800')} border ${border('border-gray-600', 'border-gray-800')} text-xs font-mono text-center cursor-pointer`}
                   >
                     IMPORT CARD
                   </label>
                   <button
                     onClick={createCharacterCard}
-                    className="flex-1 px-3 py-1 bg-gray-800 hover:bg-gray-700 border border-gray-600 text-xs font-mono"
+                    className={`flex-1 px-3 py-1 ${bg('bg-gray-800', 'bg-gray-900')} ${hover('hover:bg-gray-700', 'hover:bg-gray-800')} border ${border('border-gray-600', 'border-gray-800')} text-xs font-mono`}
                   >
                     CREATE CARD
                   </button>
@@ -962,7 +975,7 @@
                     </button>
                     <button
                       onClick={exportCharacterCard}
-                      className="flex-1 px-3 py-1 bg-gray-800 hover:bg-gray-700 border border-gray-600 text-xs font-mono"
+                      className={`flex-1 px-3 py-1 ${bg('bg-gray-800', 'bg-gray-900')} ${hover('hover:bg-gray-700', 'hover:bg-gray-800')} border ${border('border-gray-600', 'border-gray-800')} text-xs font-mono`}
                     >
                       EXPORT CARD
                     </button>
@@ -973,12 +986,12 @@
           )}
 
           {showCharacterCard && characterCard && (
-            <div className="border-b border-gray-700 bg-gray-850 p-3 space-y-3 max-h-96 overflow-y-auto">
+            <div className={`border-b ${border('border-gray-700', 'border-gray-900')} ${bg('bg-gray-850', 'bg-black')} p-3 space-y-3 max-h-96 overflow-y-auto`}>
               <div className="flex justify-between items-center mb-2">
                 <div className="text-sm font-mono text-gray-300">CHARACTER CARD EDITOR</div>
                 <button
                   onClick={() => setShowCharacterCard(false)}
-                  className="px-2 py-1 bg-gray-800 hover:bg-gray-700 border border-gray-600 text-xs font-mono"
+                  className={`px-2 py-1 ${bg('bg-gray-800', 'bg-gray-900')} ${hover('hover:bg-gray-700', 'hover:bg-gray-800')} border ${border('border-gray-600', 'border-gray-800')} text-xs font-mono`}
                 >
                   CLOSE
                 </button>
@@ -990,7 +1003,7 @@
                   type="text"
                   value={characterCard.data?.name || ''}
                   onChange={(e) => updateCharacterCardField('name', e.target.value)}
-                  className="w-full bg-gray-800 border border-gray-600 px-2 py-1 text-sm font-mono focus:outline-none focus:border-gray-500"
+                  className={`w-full ${bg('bg-gray-800', 'bg-gray-900')} border ${border('border-gray-600', 'border-gray-800')} px-2 py-1 text-sm font-mono focus:outline-none ${border('focus:border-gray-500', 'focus:border-gray-700')}`}
                   placeholder="Character name..."
                 />
               </div>
@@ -1000,7 +1013,7 @@
                 <textarea
                   value={characterCard.data?.description || ''}
                   onChange={(e) => updateCharacterCardField('description', e.target.value)}
-                  className="w-full bg-gray-800 border border-gray-600 px-2 py-1 text-sm font-mono focus:outline-none focus:border-gray-500 h-20 resize-none"
+                  className={`w-full ${bg('bg-gray-800', 'bg-gray-900')} border ${border('border-gray-600', 'border-gray-800')} px-2 py-1 text-sm font-mono focus:outline-none ${border('focus:border-gray-500', 'focus:border-gray-700')} h-20 resize-none`}
                   placeholder="Physical appearance, background..."
                 />
               </div>
@@ -1010,7 +1023,7 @@
                 <textarea
                   value={characterCard.data?.personality || ''}
                   onChange={(e) => updateCharacterCardField('personality', e.target.value)}
-                  className="w-full bg-gray-800 border border-gray-600 px-2 py-1 text-sm font-mono focus:outline-none focus:border-gray-500 h-20 resize-none"
+                  className={`w-full ${bg('bg-gray-800', 'bg-gray-900')} border ${border('border-gray-600', 'border-gray-800')} px-2 py-1 text-sm font-mono focus:outline-none ${border('focus:border-gray-500', 'focus:border-gray-700')} h-20 resize-none`}
                   placeholder="Personality traits, mannerisms..."
                 />
               </div>
@@ -1020,7 +1033,7 @@
                 <textarea
                   value={characterCard.data?.scenario || ''}
                   onChange={(e) => updateCharacterCardField('scenario', e.target.value)}
-                  className="w-full bg-gray-800 border border-gray-600 px-2 py-1 text-sm font-mono focus:outline-none focus:border-gray-500 h-20 resize-none"
+                  className={`w-full ${bg('bg-gray-800', 'bg-gray-900')} border ${border('border-gray-600', 'border-gray-800')} px-2 py-1 text-sm font-mono focus:outline-none ${border('focus:border-gray-500', 'focus:border-gray-700')} h-20 resize-none`}
                   placeholder="Setting, situation, context..."
                 />
               </div>
@@ -1030,7 +1043,7 @@
                 <textarea
                   value={characterCard.data?.first_mes || ''}
                   onChange={(e) => updateCharacterCardField('first_mes', e.target.value)}
-                  className="w-full bg-gray-800 border border-gray-600 px-2 py-1 text-sm font-mono focus:outline-none focus:border-gray-500 h-20 resize-none"
+                  className={`w-full ${bg('bg-gray-800', 'bg-gray-900')} border ${border('border-gray-600', 'border-gray-800')} px-2 py-1 text-sm font-mono focus:outline-none ${border('focus:border-gray-500', 'focus:border-gray-700')} h-20 resize-none`}
                   placeholder="Character's opening message..."
                 />
               </div>
@@ -1040,14 +1053,14 @@
                 <textarea
                   value={characterCard.data?.mes_example || ''}
                   onChange={(e) => updateCharacterCardField('mes_example', e.target.value)}
-                  className="w-full bg-gray-800 border border-gray-600 px-2 py-1 text-sm font-mono focus:outline-none focus:border-gray-500 h-24 resize-none"
+                  className={`w-full ${bg('bg-gray-800', 'bg-gray-900')} border ${border('border-gray-600', 'border-gray-800')} px-2 py-1 text-sm font-mono focus:outline-none ${border('focus:border-gray-500', 'focus:border-gray-700')} h-24 resize-none`}
                   placeholder="<START>
 {{user}}: Hello!
 {{char}}: Hi there!"
                 />
               </div>
 
-              <div className="flex gap-2 pt-2 border-t border-gray-700">
+              <div className={`flex gap-2 pt-2 border-t ${border('border-gray-700', 'border-gray-900')}`}>
                 <button
                   onClick={applyCharacterCard}
                   className="flex-1 px-3 py-1 bg-green-900 hover:bg-green-800 border border-green-700 text-xs font-mono"
@@ -1056,7 +1069,7 @@
                 </button>
                 <button
                   onClick={exportCharacterCard}
-                  className="flex-1 px-3 py-1 bg-gray-800 hover:bg-gray-700 border border-gray-600 text-xs font-mono"
+                  className={`flex-1 px-3 py-1 ${bg('bg-gray-800', 'bg-gray-900')} ${hover('hover:bg-gray-700', 'hover:bg-gray-800')} border ${border('border-gray-600', 'border-gray-800')} text-xs font-mono`}
                 >
                   EXPORT JSON
                 </button>
@@ -1088,7 +1101,7 @@
                       {msg.role === 'user' && (
                         <button
                           onClick={() => startEdit(idx)}
-                          className="px-2 py-0.5 bg-gray-800 hover:bg-gray-700 border border-gray-600 text-xs font-mono"
+                          className={`px-2 py-0.5 ${bg('bg-gray-800', 'bg-gray-900')} ${hover('hover:bg-gray-700', 'hover:bg-gray-800')} border ${border('border-gray-600', 'border-gray-800')} text-xs font-mono`}
                           disabled={loading}
                         >
                           EDIT
@@ -1097,7 +1110,7 @@
                       {msg.role === 'assistant' && idx === messages.length - 1 && (
                         <button
                           onClick={() => regenerateMessage(idx)}
-                          className="px-2 py-0.5 bg-gray-800 hover:bg-gray-700 border border-gray-600 text-xs font-mono"
+                          className={`px-2 py-0.5 ${bg('bg-gray-800', 'bg-gray-900')} ${hover('hover:bg-gray-700', 'hover:bg-gray-800')} border ${border('border-gray-600', 'border-gray-800')} text-xs font-mono`}
                           disabled={loading}
                         >
                           REGEN
@@ -1125,7 +1138,7 @@
                       <textarea
                         value={editText}
                         onChange={(e) => setEditText(e.target.value)}
-                        className="w-full bg-gray-800 border border-gray-600 px-2 py-2 text-sm font-mono focus:outline-none focus:border-gray-500 resize-none"
+                        className={`w-full ${bg('bg-gray-800', 'bg-gray-900')} border ${border('border-gray-600', 'border-gray-800')} px-2 py-2 text-sm font-mono focus:outline-none ${border('focus:border-gray-500', 'focus:border-gray-700')} resize-none`}
                         rows="4"
                       />
                       <div className="flex gap-2">
@@ -1137,7 +1150,7 @@
                         </button>
                         <button
                           onClick={cancelEdit}
-                          className="px-3 py-1 bg-gray-800 hover:bg-gray-700 border border-gray-600 text-xs font-mono"
+                          className={`px-3 py-1 ${bg('bg-gray-800', 'bg-gray-900')} ${hover('hover:bg-gray-700', 'hover:bg-gray-800')} border ${border('border-gray-600', 'border-gray-800')} text-xs font-mono`}
                         >
                           CANCEL
                         </button>
@@ -1151,7 +1164,7 @@
                           : msg.role === 'assistant'
                           ? 'text-green-400'
                           : 'text-red-400'
-                      } ${isCurrentResult ? 'bg-gray-800 p-2 rounded border border-yellow-600' : ''}`}
+                      } ${isCurrentResult ? `${bg('bg-gray-800', 'bg-gray-950')} p-2 rounded border border-yellow-600` : ''}`}
                     >
                       {searchQuery ? (
                         highlightText(msg.content, searchQuery).split('<<HIGHLIGHT>>').map((part, i) => {
@@ -1194,13 +1207,13 @@
             <div ref={messagesEndRef} />
           </div>
 
-          <div className="border-t border-gray-700 p-3">
+          <div className={`border-t ${border('border-gray-700', 'border-gray-900')} p-3`}>
             <div className="flex gap-2">
               <textarea
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyPress={handleKeyPress}
-                className="flex-1 bg-gray-800 border border-gray-600 px-3 py-2 text-sm font-mono focus:outline-none focus:border-gray-500 resize-none"
+                className={`flex-1 ${bg('bg-gray-800', 'bg-gray-900')} border ${border('border-gray-600', 'border-gray-800')} px-3 py-2 text-sm font-mono focus:outline-none ${border('focus:border-gray-500', 'focus:border-gray-700')} resize-none`}
                 placeholder="Enter message... (Shift+Enter for new line)"
                 rows="3"
                 disabled={loading || !apiKey}
@@ -1216,7 +1229,7 @@
                 <button
                   onClick={sendMessage}
                   disabled={loading || !apiKey || !input.trim()}
-                  className="px-6 bg-gray-800 hover:bg-gray-700 border border-gray-600 font-mono disabled:opacity-50 disabled:cursor-not-allowed"
+                  className={`px-6 ${bg('bg-gray-800', 'bg-gray-900')} ${hover('hover:bg-gray-700', 'hover:bg-gray-800')} border ${border('border-gray-600', 'border-gray-800')} font-mono disabled:opacity-50 disabled:cursor-not-allowed`}
                 >
                   SEND
                 </button>
@@ -1229,5 +1242,6 @@
 
     ReactDOM.render(<RoleplayChat />, document.getElementById('root'));
   </script>
+
 </body>
 </html>
