@@ -160,36 +160,88 @@
                 },
             ];
 
+            // LocalStorage helper functions
+            const loadFromStorage = (key, defaultValue) => {
+                try {
+                    const item = localStorage.getItem(key);
+                    return item ? JSON.parse(item) : defaultValue;
+                } catch (error) {
+                    console.error(
+                        `Error loading ${key} from localStorage:`,
+                        error,
+                    );
+                    return defaultValue;
+                }
+            };
+
+            const saveToStorage = (key, value) => {
+                try {
+                    localStorage.setItem(key, JSON.stringify(value));
+                } catch (error) {
+                    console.error(
+                        `Error saving ${key} to localStorage:`,
+                        error,
+                    );
+                }
+            };
+
             function ParleyChat() {
-                const [branches, setBranches] = useState({ main: [] });
-                const [currentBranch, setCurrentBranch] = useState("main");
-                const [input, setInput] = useState("");
-                const [apiKey, setApiKey] = useState("");
-                const [model, setModel] = useState(
-                    "anthropic/claude-3.5-sonnet",
+                const [branches, setBranches] = useState(() =>
+                    loadFromStorage("parley_branches", { main: [] }),
                 );
-                const [systemPrompt, setSystemPrompt] = useState(
-                    "You are a helpful assistant.",
+                const [currentBranch, setCurrentBranch] = useState(() =>
+                    loadFromStorage("parley_currentBranch", "main"),
+                );
+                const [input, setInput] = useState("");
+                const [apiKey, setApiKey] = useState(() =>
+                    loadFromStorage("parley_apiKey", ""),
+                );
+                const [model, setModel] = useState(() =>
+                    loadFromStorage(
+                        "parley_model",
+                        "anthropic/claude-3.5-sonnet",
+                    ),
+                );
+                const [systemPrompt, setSystemPrompt] = useState(() =>
+                    loadFromStorage(
+                        "parley_systemPrompt",
+                        "You are a helpful assistant.",
+                    ),
                 );
                 const [loading, setLoading] = useState(false);
                 const [showSettings, setShowSettings] = useState(true);
-                const [selectedTemplate, setSelectedTemplate] =
-                    useState("CUSTOM");
-                const [customTemplates, setCustomTemplates] = useState([]);
+                const [selectedTemplate, setSelectedTemplate] = useState(() =>
+                    loadFromStorage("parley_selectedTemplate", "CUSTOM"),
+                );
+                const [customTemplates, setCustomTemplates] = useState(() =>
+                    loadFromStorage("parley_customTemplates", []),
+                );
                 const [newTemplateName, setNewTemplateName] = useState("");
                 const [editingIndex, setEditingIndex] = useState(null);
                 const [editText, setEditText] = useState("");
 
-                const [temperature, setTemperature] = useState(1.0);
-                const [maxTokens, setMaxTokens] = useState(2000);
-                const [topP, setTopP] = useState(1.0);
-                const [frequencyPenalty, setFrequencyPenalty] = useState(0);
-                const [presencePenalty, setPresencePenalty] = useState(0);
+                const [temperature, setTemperature] = useState(() =>
+                    loadFromStorage("parley_temperature", 1.0),
+                );
+                const [maxTokens, setMaxTokens] = useState(() =>
+                    loadFromStorage("parley_maxTokens", 2000),
+                );
+                const [topP, setTopP] = useState(() =>
+                    loadFromStorage("parley_topP", 1.0),
+                );
+                const [frequencyPenalty, setFrequencyPenalty] = useState(() =>
+                    loadFromStorage("parley_frequencyPenalty", 0),
+                );
+                const [presencePenalty, setPresencePenalty] = useState(() =>
+                    loadFromStorage("parley_presencePenalty", 0),
+                );
                 const [showAdvanced, setShowAdvanced] = useState(false);
                 const [streamingText, setStreamingText] = useState("");
                 const [isStreaming, setIsStreaming] = useState(false);
 
-                const [characterCard, setCharacterCard] = useState(null);
+                const [characterCard, setCharacterCard] = useState(() =>
+                    loadFromStorage("parley_characterCard", null),
+                );
                 const [showCharacterCard, setShowCharacterCard] =
                     useState(false);
 
@@ -197,13 +249,72 @@
                 const [showSearch, setShowSearch] = useState(false);
                 const [searchResults, setSearchResults] = useState([]);
                 const [currentSearchIndex, setCurrentSearchIndex] = useState(0);
-                const [oledMode, setOledMode] = useState(false);
+                const [oledMode, setOledMode] = useState(() =>
+                    loadFromStorage("parley_oledMode", false),
+                );
 
                 const messagesEndRef = useRef(null);
                 const abortControllerRef = useRef(null);
                 const searchResultRefs = useRef([]);
 
                 const messages = branches[currentBranch] || [];
+
+                // Persistence effects
+                useEffect(() => {
+                    saveToStorage("parley_branches", branches);
+                }, [branches]);
+
+                useEffect(() => {
+                    saveToStorage("parley_currentBranch", currentBranch);
+                }, [currentBranch]);
+
+                useEffect(() => {
+                    saveToStorage("parley_apiKey", apiKey);
+                }, [apiKey]);
+
+                useEffect(() => {
+                    saveToStorage("parley_model", model);
+                }, [model]);
+
+                useEffect(() => {
+                    saveToStorage("parley_systemPrompt", systemPrompt);
+                }, [systemPrompt]);
+
+                useEffect(() => {
+                    saveToStorage("parley_selectedTemplate", selectedTemplate);
+                }, [selectedTemplate]);
+
+                useEffect(() => {
+                    saveToStorage("parley_customTemplates", customTemplates);
+                }, [customTemplates]);
+
+                useEffect(() => {
+                    saveToStorage("parley_temperature", temperature);
+                }, [temperature]);
+
+                useEffect(() => {
+                    saveToStorage("parley_maxTokens", maxTokens);
+                }, [maxTokens]);
+
+                useEffect(() => {
+                    saveToStorage("parley_topP", topP);
+                }, [topP]);
+
+                useEffect(() => {
+                    saveToStorage("parley_frequencyPenalty", frequencyPenalty);
+                }, [frequencyPenalty]);
+
+                useEffect(() => {
+                    saveToStorage("parley_presencePenalty", presencePenalty);
+                }, [presencePenalty]);
+
+                useEffect(() => {
+                    saveToStorage("parley_characterCard", characterCard);
+                }, [characterCard]);
+
+                useEffect(() => {
+                    saveToStorage("parley_oledMode", oledMode);
+                }, [oledMode]);
 
                 const scrollToBottom = () => {
                     messagesEndRef.current?.scrollIntoView({
@@ -525,6 +636,23 @@
 
                     if (currentBranch === branchName) {
                         setCurrentBranch("main");
+                    }
+                };
+
+                const clearAllData = () => {
+                    if (
+                        confirm(
+                            "Are you sure you want to clear all data? This will reset everything including conversations, settings, and templates.",
+                        )
+                    ) {
+                        // Clear all localStorage
+                        Object.keys(localStorage).forEach((key) => {
+                            if (key.startsWith("parley_")) {
+                                localStorage.removeItem(key);
+                            }
+                        });
+                        // Reload the page to reset state
+                        window.location.reload();
                     }
                 };
 
@@ -1239,12 +1367,20 @@
                                     )}
                                 </div>
 
-                                <button
-                                    onClick={() => updateMessages([])}
-                                    className={`px-4 py-2 ${glass("glass-light", "glass-light-oled")} hover:bg-gray-700/50 border ${bg("border-gray-600/30", "border-gray-900")} text-xs font-mono ${roundedClass("rounded-xl")} transition-all ${textColor("", "text-gray-500")}`}
-                                >
-                                    CLEAR CHAT
-                                </button>
+                                <div className="flex gap-2">
+                                    <button
+                                        onClick={() => updateMessages([])}
+                                        className={`flex-1 px-4 py-2 ${glass("glass-light", "glass-light-oled")} hover:bg-gray-700/50 border ${bg("border-gray-600/30", "border-gray-900")} text-xs font-mono ${roundedClass("rounded-xl")} transition-all ${textColor("", "text-gray-500")}`}
+                                    >
+                                        CLEAR CHAT
+                                    </button>
+                                    <button
+                                        onClick={clearAllData}
+                                        className={`flex-1 px-4 py-2 bg-red-900/80 hover:bg-red-800 border border-red-700/50 text-xs font-mono ${roundedClass("rounded-xl")} transition-all ${roundedClass("backdrop-blur-sm")} text-gray-300`}
+                                    >
+                                        RESET ALL
+                                    </button>
+                                </div>
 
                                 <div
                                     className={`border-t ${bg("border-gray-700/30", "border-gray-900")} pt-4 space-y-2`}
